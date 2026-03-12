@@ -253,6 +253,24 @@ function renderSidebarNotes(notes) {
   updateEmptyMessage();
 }
 
+function linkifyText(text) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part) => {
+    if (urlRegex.test(part)) {
+      urlRegex.lastIndex = 0;
+      const safeUrl = escapeHtml(part);
+      return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="note-link">${safeUrl}</a>`;
+    }
+    return escapeHtml(part);
+  }).join("");
+}
+
+function extractUrl(text) {
+  const match = text.match(/(https?:\/\/[^\s]+)/);
+  return match ? match[1] : null;
+}
+
 function renderSidebarNote(note) {
   const li = document.createElement("li");
   li.className = "sidebar-note";
@@ -260,7 +278,22 @@ function renderSidebarNote(note) {
 
   const span = document.createElement("span");
   span.className = "note-text";
-  span.textContent = note.text;
+  span.innerHTML = linkifyText(note.text);
+
+  const url = extractUrl(note.text);
+  if (url) {
+    const linkBtn = document.createElement("a");
+    linkBtn.className = "btn-open-link";
+    linkBtn.href = url;
+    linkBtn.target = "_blank";
+    linkBtn.rel = "noopener noreferrer";
+    linkBtn.title = "Abrir enlace";
+    linkBtn.innerHTML = '<span class="material-icons-outlined">open_in_new</span>';
+    li.appendChild(span);
+    li.appendChild(linkBtn);
+  } else {
+    li.appendChild(span);
+  }
 
   const btn = document.createElement("button");
   btn.className = "btn-delete";
@@ -268,7 +301,6 @@ function renderSidebarNote(note) {
   btn.title = "Eliminar nota";
   btn.addEventListener("click", () => deleteSidebarNote(note.id, li));
 
-  li.appendChild(span);
   li.appendChild(btn);
   return li;
 }
