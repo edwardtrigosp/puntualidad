@@ -507,26 +507,6 @@ html, body {
   text-decoration: underline;
 }
 
-.sidebar-note .btn-open-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  color: #1a73e8;
-  flex-shrink: 0;
-  transition: background 0.15s;
-}
-
-.sidebar-note .btn-open-link:hover {
-  background: #e8f0fe;
-}
-
-.sidebar-note .btn-open-link .material-icons-outlined {
-  font-size: 16px;
-}
-
 .sidebar-note .btn-delete {
   background: none;
   border: none;

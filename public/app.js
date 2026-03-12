@@ -268,11 +268,6 @@ function linkifyText(text) {
   return result;
 }
 
-function extractUrl(text) {
-  const match = text.match(/(https?:\/\/[^\s]+)/);
-  return match ? match[1] : null;
-}
-
 function renderSidebarNote(note) {
   const li = document.createElement("li");
   li.className = "sidebar-note";
@@ -282,20 +277,7 @@ function renderSidebarNote(note) {
   span.className = "note-text";
   span.innerHTML = linkifyText(note.text);
 
-  const url = extractUrl(note.text);
-  if (url) {
-    const linkBtn = document.createElement("a");
-    linkBtn.className = "btn-open-link";
-    linkBtn.href = url;
-    linkBtn.target = "_blank";
-    linkBtn.rel = "noopener noreferrer";
-    linkBtn.title = "Abrir enlace";
-    linkBtn.innerHTML = '<span class="material-icons-outlined">open_in_new</span>';
-    li.appendChild(span);
-    li.appendChild(linkBtn);
-  } else {
-    li.appendChild(span);
-  }
+  li.appendChild(span);
 
   const btn = document.createElement("button");
   btn.className = "btn-delete";
