@@ -10,6 +10,8 @@ const textArea = document.getElementById("text");
 const saveStatus = document.getElementById("save-status");
 const btnAddNote = document.getElementById("btn-add-note");
 const sidebarList = document.getElementById("sidebar-list");
+const btnToggleSidebar = document.getElementById("btn-toggle-sidebar");
+const editorLayout = document.querySelector(".editor-layout");
 
 let saveTimer = null;
 let currentSheetId = null;
@@ -326,6 +328,22 @@ async function deleteSidebarNote(noteId, li) {
 btnNewFolder.addEventListener("click", createFolder);
 btnBack.addEventListener("click", showHome);
 btnAddNote.addEventListener("click", addSidebarNote);
+btnToggleSidebar.addEventListener("click", toggleSidebar);
+
+function toggleSidebar() {
+  editorLayout.classList.toggle("sidebar-collapsed");
+  const collapsed = editorLayout.classList.contains("sidebar-collapsed");
+  btnToggleSidebar.querySelector(".material-icons-outlined").textContent =
+    collapsed ? "side_navigation" : "side_navigation";
+  btnToggleSidebar.title = collapsed ? "Mostrar notas" : "Ocultar notas";
+  localStorage.setItem("sidebar-collapsed", collapsed);
+}
+
+// Restore sidebar state
+if (localStorage.getItem("sidebar-collapsed") === "true") {
+  editorLayout.classList.add("sidebar-collapsed");
+  btnToggleSidebar.title = "Mostrar notas";
+}
 
 document.addEventListener("keydown", (e) => {
   if (e.ctrlKey && e.key === "Enter") {

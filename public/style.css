@@ -337,6 +337,17 @@ html, body {
   grid-template-columns: 2fr 1fr;
   flex: 1;
   overflow: hidden;
+  transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.editor-layout.sidebar-collapsed {
+  grid-template-columns: 1fr 0fr;
+}
+
+.editor-layout.sidebar-collapsed .sidebar {
+  border-left: none;
+  padding: 0;
+  overflow: hidden;
 }
 
 .editor {
@@ -429,6 +440,8 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar-header {
