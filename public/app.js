@@ -255,15 +255,17 @@ function renderSidebarNotes(notes) {
 
 function linkifyText(text) {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
-  const parts = text.split(urlRegex);
-  return parts.map((part) => {
-    if (urlRegex.test(part)) {
-      urlRegex.lastIndex = 0;
-      const safeUrl = escapeHtml(part);
-      return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="note-link">${safeUrl}</a>`;
-    }
-    return escapeHtml(part);
-  }).join("");
+  let result = "";
+  let lastIndex = 0;
+  let match;
+  while ((match = urlRegex.exec(text)) !== null) {
+    result += escapeHtml(text.slice(lastIndex, match.index));
+    const safeUrl = escapeHtml(match[1]);
+    result += `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="note-link">${safeUrl}</a>`;
+    lastIndex = urlRegex.lastIndex;
+  }
+  result += escapeHtml(text.slice(lastIndex));
+  return result;
 }
 
 function extractUrl(text) {
