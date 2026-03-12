@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- PANTALLA DE INICIO -->
+  <div id="home-screen" class="screen">
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="material-icons-outlined topbar-icon">menu_book</span>
+        <h1>Mis Cuadernos</h1>
+      </div>
+    </header>
+    <div id="folders-container" class="folders-container"></div>
+    <button id="btn-new-folder" class="fab" title="Nueva carpeta">
+      <span class="material-icons-outlined">create_new_folder</span>
+    </button>
+  </div>
+
+  <!-- PANTALLA DE EDITOR -->
+  <div id="editor-screen" class="screen hidden">
+    <header class="topbar topbar-editor">
+      <div class="topbar-left">
+        <button id="btn-back" class="icon-btn" title="Volver">
+          <span class="material-icons-outlined">arrow_back</span>
+        </button>
+        <span id="breadcrumb" class="breadcrumb"></span>
+      </div>
+      <div class="topbar-right">
+        <span id="save-status" class="save-status">Sin guardar</span>
+      </div>
+    </header>
+    <div class="editor-layout">
+      <main class="editor">
+        <input type="text" id="title" placeholder="Sin titulo" autocomplete="off">
+        <textarea id="text" placeholder="Comienza a escribir..."></textarea>
+        <div class="editor-footer">
+          <button id="btn-add-note" class="btn-outlined" type="button">
+            <span class="material-icons-outlined btn-icon">bookmark_add</span>
+            Agregar como nota
+          </button>
+        </div>
+      </main>
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <span class="material-icons-outlined sidebar-icon">bookmarks</span>
+          <h2>Notas</h2>
+        </div>
+        <ul id="sidebar-list"></ul>
+      </aside>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
