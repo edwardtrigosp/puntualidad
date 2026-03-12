@@ -334,7 +334,7 @@ function toggleSidebar() {
   editorLayout.classList.toggle("sidebar-collapsed");
   const collapsed = editorLayout.classList.contains("sidebar-collapsed");
   btnToggleSidebar.querySelector(".material-icons-outlined").textContent =
-    collapsed ? "side_navigation" : "side_navigation";
+    collapsed ? "vertical_split" : "vertical_split";
   btnToggleSidebar.title = collapsed ? "Mostrar notas" : "Ocultar notas";
   localStorage.setItem("sidebar-collapsed", collapsed);
 }
