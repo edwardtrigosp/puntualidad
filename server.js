@@ -7,6 +7,7 @@ const DATA_DIR = path.join(__dirname, "data");
 const PUBLIC_DIR = path.join(__dirname, "public");
 const FOLDERS_FILE = path.join(DATA_DIR, "folders.json");
 const SHEETS_DIR = path.join(DATA_DIR, "sheets");
+const HORARIO_FILE = path.join(DATA_DIR, "horario.json");
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -20,6 +21,9 @@ fs.mkdirSync(DATA_DIR, { recursive: true });
 fs.mkdirSync(SHEETS_DIR, { recursive: true });
 if (!fs.existsSync(FOLDERS_FILE)) {
   fs.writeFileSync(FOLDERS_FILE, JSON.stringify({ folders: [] }));
+}
+if (!fs.existsSync(HORARIO_FILE)) {
+  fs.writeFileSync(HORARIO_FILE, JSON.stringify({ schedule: {} }));
 }
 
 function readJSON(filePath) {
@@ -119,7 +123,7 @@ const server = http.createServer(async (req, res) => {
           return sendJSON(res, 400, { error: "Nombre vacío" });
         }
         const data = readJSON(FOLDERS_FILE) || { folders: [] };
-        const folder = { id: generateId(), name: body.name.trim(), createdAt: new Date().toISOString() };
+        const folder = { id: generateId(), name: body.name.trim(), icon: body.icon || "folder", createdAt: new Date().toISOString() };
         data.folders.push(folder);
         writeJSON(FOLDERS_FILE, data);
         return sendJSON(res, 200, { ok: true, folder });
@@ -132,6 +136,7 @@ const server = http.createServer(async (req, res) => {
         const folder = data.folders.find((f) => f.id === parts[1]);
         if (!folder) return sendJSON(res, 404, { error: "Carpeta no encontrada" });
         if (body.name) folder.name = body.name.trim();
+        if (body.icon) folder.icon = body.icon;
         writeJSON(FOLDERS_FILE, data);
         return sendJSON(res, 200, { ok: true, folder });
       }
@@ -222,6 +227,28 @@ const server = http.createServer(async (req, res) => {
         sheet.sidebarNotes = sheet.sidebarNotes.filter((n) => n.id !== parts[3]);
         writeJSON(sheetPath(sheet.id), sheet);
         return sendJSON(res, 200, { ok: true });
+      }
+
+      // === HORARIO ===
+
+      // GET /api/horario
+      if (method === "GET" && parts[0] === "horario" && parts.length === 1) {
+        const data = readJSON(HORARIO_FILE) || { schedule: {} };
+        return sendJSON(res, 200, data);
+      }
+
+      // PUT /api/horario
+      if (method === "PUT" && parts[0] === "horario" && parts.length === 1) {
+        const body = await parseBody(req);
+        if (body.entries && Array.isArray(body.entries)) {
+          writeJSON(HORARIO_FILE, { entries: body.entries });
+          return sendJSON(res, 200, { ok: true });
+        }
+        if (body.schedule && typeof body.schedule === "object") {
+          writeJSON(HORARIO_FILE, { schedule: body.schedule });
+          return sendJSON(res, 200, { ok: true });
+        }
+        return sendJSON(res, 400, { error: "entries o schedule requerido" });
       }
 
       return sendJSON(res, 404, { error: "Ruta no encontrada" });

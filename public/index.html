@@ -18,11 +18,44 @@
         <span class="material-icons-outlined topbar-icon">menu_book</span>
         <h1>Mis Cuadernos</h1>
       </div>
+      <div class="topbar-right">
+        <button id="btn-view-toggle" class="icon-btn" title="Cambiar vista">
+          <span class="material-icons-outlined">view_list</span>
+        </button>
+        <button id="btn-horario" class="icon-btn" title="Horario">
+          <span class="material-icons-outlined">calendar_today</span>
+        </button>
+      </div>
     </header>
     <div id="folders-container" class="folders-container"></div>
     <button id="btn-new-folder" class="fab" title="Nueva carpeta">
       <span class="material-icons-outlined">create_new_folder</span>
     </button>
+  </div>
+
+  <!-- PANTALLA DE CARPETA (hojas) -->
+  <div id="folder-screen" class="screen hidden">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button id="btn-folder-back" class="icon-btn" title="Volver">
+          <span class="material-icons-outlined">arrow_back</span>
+        </button>
+        <span class="material-icons-outlined topbar-icon">folder</span>
+        <h1 id="folder-screen-title">Carpeta</h1>
+      </div>
+      <div class="topbar-right">
+        <button id="btn-new-sheet" class="icon-btn" title="Nueva hoja">
+          <span class="material-icons-outlined">note_add</span>
+        </button>
+        <button id="btn-folder-rename" class="icon-btn" title="Renombrar">
+          <span class="material-icons-outlined">edit</span>
+        </button>
+        <button id="btn-folder-delete" class="icon-btn" title="Eliminar carpeta">
+          <span class="material-icons-outlined">delete</span>
+        </button>
+      </div>
+    </header>
+    <div id="folder-sheets-container" class="folder-sheets-container"></div>
   </div>
 
   <!-- PANTALLA DE EDITOR -->
@@ -35,7 +68,6 @@
         <span id="breadcrumb" class="breadcrumb"></span>
       </div>
       <div class="topbar-right">
-        <span id="save-status" class="save-status">Sin guardar</span>
         <button id="btn-toggle-sidebar" class="icon-btn" title="Mostrar/ocultar notas">
           <span class="material-icons-outlined">vertical_split</span>
         </button>
@@ -43,8 +75,43 @@
     </header>
     <div class="editor-layout">
       <main class="editor">
+        <div class="formatting-toolbar">
+          <select id="font-family-select" class="toolbar-select" title="Fuente">
+            <option value="Roboto">Roboto</option>
+            <option value="Google Sans">Google Sans</option>
+            <option value="Arial">Arial</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Verdana">Verdana</option>
+          </select>
+          <div class="toolbar-separator"></div>
+          <select id="font-size-select" class="toolbar-select" title="Tamaño de fuente">
+            <option value="8">8</option>
+            <option value="10">10</option>
+            <option value="12">12</option>
+            <option value="14">14</option>
+            <option value="16" selected>16</option>
+            <option value="18">18</option>
+            <option value="20">20</option>
+            <option value="24">24</option>
+            <option value="28">28</option>
+            <option value="32">32</option>
+            <option value="36">36</option>
+            <option value="48">48</option>
+            <option value="72">72</option>
+          </select>
+          <div class="toolbar-separator"></div>
+          <button id="btn-bold" class="toolbar-btn" title="Negrita (Ctrl+B)">
+            <span class="material-icons-outlined">format_bold</span>
+          </button>
+          <div class="toolbar-separator"></div>
+          <span id="save-status" class="toolbar-save-icon" title="Sin guardar">
+            <span class="material-icons-outlined">cloud_off</span>
+          </span>
+        </div>
         <input type="text" id="title" placeholder="Sin titulo" autocomplete="off">
-        <textarea id="text" placeholder="Comienza a escribir..."></textarea>
+        <div id="text" contenteditable="true" data-placeholder="Comienza a escribir..."></div>
         <div class="editor-footer">
           <button id="btn-add-note" class="btn-outlined" type="button">
             <span class="material-icons-outlined btn-icon">bookmark_add</span>
@@ -59,6 +126,107 @@
         </div>
         <ul id="sidebar-list"></ul>
       </aside>
+    </div>
+  </div>
+
+  <!-- PANTALLA DE HORARIO -->
+  <div id="horario-screen" class="screen hidden">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button id="btn-horario-back" class="icon-btn" title="Volver">
+          <span class="material-icons-outlined">arrow_back</span>
+        </button>
+        <span class="material-icons-outlined topbar-icon">calendar_today</span>
+        <h1>Mi Horario</h1>
+      </div>
+    </header>
+    <div class="horario-container">
+      <div id="horario-grid" class="horario-grid"></div>
+    </div>
+    <div id="horario-modal-overlay" class="modal-overlay hidden">
+      <div class="horario-modal">
+        <div class="modal-header">
+          <h3 id="modal-title">Nueva clase</h3>
+          <button id="btn-modal-close" class="icon-btn">
+            <span class="material-icons-outlined">close</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label for="modal-folder">Materia</label>
+          <select id="modal-folder" class="modal-input"></select>
+
+          <label for="modal-day">Día</label>
+          <select id="modal-day" class="modal-input">
+            <option value="lunes">Lunes</option>
+            <option value="martes">Martes</option>
+            <option value="miercoles">Miércoles</option>
+            <option value="jueves">Jueves</option>
+            <option value="viernes">Viernes</option>
+            <option value="sabado">Sábado</option>
+          </select>
+
+          <div class="modal-row">
+            <div class="modal-field">
+              <label for="modal-start">Hora inicio</label>
+              <select id="modal-start" class="modal-input"></select>
+            </div>
+            <div class="modal-field">
+              <label for="modal-end">Hora fin</label>
+              <select id="modal-end" class="modal-input"></select>
+            </div>
+          </div>
+
+          <label for="modal-salon">Salón</label>
+          <input id="modal-salon" type="text" class="modal-input" placeholder="Ej: A-101" autocomplete="off">
+
+          <label for="modal-notas">Notas</label>
+          <input id="modal-notas" type="text" class="modal-input" placeholder="Opcional" autocomplete="off">
+        </div>
+        <div class="modal-footer">
+          <button id="btn-modal-delete" class="btn-danger hidden">Eliminar</button>
+          <button id="btn-modal-save" class="btn-primary">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para crear/renombrar carpeta -->
+  <div id="folder-modal-overlay" class="modal-overlay hidden">
+    <div class="horario-modal">
+      <div class="modal-header">
+        <h3 id="folder-modal-title">Nueva carpeta</h3>
+        <button id="btn-folder-modal-close" class="icon-btn">
+          <span class="material-icons-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label for="folder-modal-name">Nombre</label>
+        <input id="folder-modal-name" type="text" class="modal-input" placeholder="Nombre de la materia" autocomplete="off">
+        <label>Icono</label>
+        <div id="folder-icon-picker" class="icon-picker-grid"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-folder-modal-save" class="btn-primary">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación -->
+  <div id="confirm-modal-overlay" class="modal-overlay hidden">
+    <div class="horario-modal">
+      <div class="modal-header">
+        <h3 id="confirm-modal-title">Confirmar</h3>
+        <button id="btn-confirm-close" class="icon-btn">
+          <span class="material-icons-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-modal-message" style="font-size:14px;color:#3c4043;margin:0;"></p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-confirm-cancel" class="btn-danger">Cancelar</button>
+        <button id="btn-confirm-ok" class="btn-primary">Eliminar</button>
+      </div>
     </div>
   </div>
 

@@ -125,7 +125,7 @@ html, body {
   border-radius: 12px;
   margin-bottom: 16px;
   overflow: hidden;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .folder-card:hover {
@@ -179,12 +179,106 @@ html, body {
   color: #d93025;
 }
 
-/* === Sheets Grid === */
-.sheets-list {
-  padding: 8px 16px 16px;
+/* === Folder Sheets Container (folder screen) === */
+.folder-sheets-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 12px;
+  align-content: start;
+}
+
+.folder-sheets-container .empty-message,
+.view-grid .empty-message {
+  grid-column: 1 / -1;
+}
+
+/* === Vista Cuadrícula (carpetas) — mismo diseño que las hojas === */
+.view-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  align-content: start;
+}
+
+.view-grid .folder-card {
+  margin-bottom: 0;
+  border-radius: 8px;
+  padding: 16px;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.view-grid .folder-card:hover {
+  border-color: #1a73e8;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.15), 0 4px 8px rgba(60, 64, 67, 0.1);
+}
+
+.view-grid .folder-card .folder-header {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  background: transparent;
+  flex: 1;
+}
+
+.view-grid .folder-card .folder-header:hover {
+  background: transparent;
+}
+
+.view-grid .folder-card-icon {
+  font-size: 28px;
+  color: #5f6368;
+  line-height: 1;
+}
+
+.view-grid .folder-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #202124;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  width: 100%;
+}
+
+/* === Vista Lista (carpetas) === */
+.view-list .folder-card {
+  border-radius: 0;
+  margin-bottom: 0;
+  border: none;
+  border-bottom: 1px solid #dadce0;
+  padding: 0;
+  min-height: 0;
+}
+
+.view-list .folder-card:first-child {
+  border-top: 1px solid #dadce0;
+}
+
+.view-list .folder-header {
+  padding: 12px 16px;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.view-list .folder-card-icon {
+  font-size: 22px;
+  color: #5f6368;
+  flex-shrink: 0;
+}
+
+.view-list .folder-name {
+  font-size: 15px;
 }
 
 .sheet-item {
@@ -308,28 +402,28 @@ html, body {
   font-weight: 400;
 }
 
-.save-status {
-  font-size: 13px;
+.toolbar-save-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
   color: #80868b;
-  padding: 6px 12px;
-  border-radius: 16px;
-  background: #f1f3f4;
-  transition: all 0.3s;
+  cursor: default;
+  transition: color 0.3s;
 }
 
-.save-status.saving {
+.toolbar-save-icon.saving {
   color: #e37400;
-  background: #fef7e0;
 }
 
-.save-status.saved {
+.toolbar-save-icon.saved {
   color: #137333;
-  background: #e6f4ea;
 }
 
-.save-status.error {
+.toolbar-save-icon.error {
   color: #d93025;
-  background: #fce8e6;
 }
 
 .editor-layout {
@@ -379,9 +473,65 @@ html, body {
   color: #dadce0;
 }
 
+/* === Formatting Toolbar === */
+.formatting-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  border-bottom: 1px solid #e8eaed;
+}
+
+.toolbar-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #5f6368;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.toolbar-btn:hover {
+  background: #f1f3f4;
+}
+
+.toolbar-btn.active {
+  background: #e8f0fe;
+  color: #1a73e8;
+}
+
+.toolbar-separator {
+  width: 1px;
+  height: 24px;
+  background: #dadce0;
+  margin: 0 4px;
+}
+
+.toolbar-select {
+  padding: 6px 12px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 13px;
+  color: #3c4043;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.toolbar-select:focus {
+  border-color: #1a73e8;
+}
+
 #text {
   flex: 1;
-  resize: none;
+  overflow-y: auto;
   border: none;
   padding: 16px 0;
   font-size: 15px;
@@ -389,10 +539,15 @@ html, body {
   line-height: 1.75;
   outline: none;
   color: #3c4043;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  min-height: 200px;
 }
 
-#text::placeholder {
+#text:empty::before {
+  content: attr(data-placeholder);
   color: #dadce0;
+  pointer-events: none;
 }
 
 .editor-footer {
@@ -467,29 +622,44 @@ html, body {
   list-style: none;
   overflow-y: auto;
   flex: 1;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  margin: 12px;
+  padding: 0;
+  background: #fff;
+  border: 1px solid #e8eaed;
+  border-radius: 8px;
+}
+
+#sidebar-list.empty {
+  background: transparent;
+  border: none;
 }
 
 .sidebar-note {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  background: #fff;
-  border: 1px solid #e8eaed;
-  border-radius: 8px;
-  padding: 12px;
+  padding: 10px 14px;
   font-size: 13px;
   line-height: 1.5;
   word-break: break-word;
-  transition: box-shadow 0.15s;
-  border-left: 3px solid #fbbc04;
+  border-bottom: 1px solid #f1f3f4;
+  transition: background 0.15s;
+}
+
+.sidebar-note::before {
+  content: "•";
+  color: #fbbc04;
+  font-size: 18px;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.sidebar-note:last-child {
+  border-bottom: none;
 }
 
 .sidebar-note:hover {
-  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.12);
+  background: #f8f9fa;
 }
 
 .sidebar-note .note-text {
@@ -536,17 +706,295 @@ html, body {
 }
 
 .sidebar-empty {
-  color: #80868b;
+  color: #9aa0a6;
   font-size: 13px;
   text-align: center;
-  padding: 32px 16px;
+  padding: 40px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .sidebar-empty .material-icons-outlined {
-  font-size: 36px;
+  font-size: 40px;
   color: #dadce0;
+}
+
+/* === Horario Screen === */
+.horario-container {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+  background: #f8f9fa;
+}
+
+.horario-grid {
+  display: grid;
+  grid-template-columns: 60px repeat(6, 1fr);
+  grid-template-rows: 40px repeat(13, 52px);
+  background: #fff;
+  border-radius: 8px;
+  max-width: 1100px;
+  min-width: 750px;
+  margin: 0 auto;
+  border: 1px solid #e0e0e0;
+}
+
+.horario-header {
+  background: #fff;
+  color: #3c4043;
+  font-weight: 500;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Google Sans', sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 2px solid #1a73e8;
+  border-right: 1px solid #e8eaed;
+}
+
+.horario-header:last-of-type {
+  border-right: none;
+}
+
+.horario-header.corner {
+  background: #fff;
+  border-bottom: 2px solid #1a73e8;
+  border-right: 1px solid #e8eaed;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.horario-time {
+  background: #fff;
+  color: #70757a;
+  font-size: 11px;
+  font-weight: 400;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 4px 8px 0 0;
+  font-family: 'Google Sans', sans-serif;
+  border-right: 1px solid #e8eaed;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.horario-cell {
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background 0.15s;
+  padding: 4px;
+  text-align: center;
+  word-break: break-word;
+  line-height: 1.3;
+  border-right: 1px solid #e8eaed;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.horario-cell:hover {
+  background: #f8f9fa;
+}
+
+
+/* === Horario Block (evento multi-hora) === */
+.horario-block {
+  border-radius: 6px;
+  color: #fff;
+  padding: 6px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 2px;
+  transition: opacity 0.15s;
+}
+
+.horario-block:hover {
+  opacity: 0.85;
+}
+
+.horario-block .block-name {
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.horario-block .block-detail {
+  font-size: 10px;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+/* === Horario Modal === */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.horario-modal {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(60, 64, 67, 0.3);
+  width: 400px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 12px;
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #202124;
+  font-family: 'Google Sans', sans-serif;
+}
+
+.modal-body {
+  padding: 8px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modal-body label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #5f6368;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 8px;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  color: #202124;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.modal-input:focus {
+  border-color: #1a73e8;
+}
+
+.modal-row {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 24px 20px;
+}
+
+.btn-primary {
+  padding: 10px 24px;
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Google Sans', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: #1557b0;
+}
+
+.btn-danger {
+  padding: 10px 24px;
+  background: none;
+  color: #d93025;
+  border: 1px solid #d93025;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Google Sans', sans-serif;
+  cursor: pointer;
+  margin-right: auto;
+  transition: background 0.2s;
+}
+
+.btn-danger:hover {
+  background: #fce8e6;
+}
+
+/* === Icon Picker === */
+.icon-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 40px);
+  gap: 4px;
+  max-height: 160px;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.icon-picker-item {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  background: none;
+  color: #5f6368;
+  transition: all 0.15s;
+  padding: 0;
+}
+
+.icon-picker-item:hover {
+  background: #f1f3f4;
+}
+
+.icon-picker-item.selected {
+  border-color: #1a73e8;
+  background: #e8f0fe;
+  color: #1a73e8;
+}
+
+.icon-picker-item .material-icons-outlined {
+  font-size: 22px;
 }
